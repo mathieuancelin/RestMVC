@@ -1,8 +1,65 @@
 #{extends 'main.html' /}
 #{set title:'Home' /}
 
-<h2 class="title"><a href="#">Empty application</a></h2>
+<h2 class="title"><a href="#">My awesome application</a></h2>
 <div class="entry">
-    <p>${name}</p>
+    <p>
+        <div id="results" style="width: 100px; background: #66FF88; -webkit-border-radius: 3px; -moz-border-radius: 3px;">
+            <p> Person added</p>
+        </div>
+        <div id="fail" style="width: 120px; background: #FF4411; -webkit-border-radius: 3px; -moz-border-radius: 3px;">
+            <p> Person not added</p>
+        </div>
+        <div id="form">
+            <table>
+                <tr><td>name : </td><td><input type="text" name="name" id="name"/></td></tr>
+                <tr><td>surname : </td><td><input type="text" name="surname" id="surname"/></td></tr>
+                <tr><td>address : </td><td><input type="text" name="address" id="address"/></td></tr>
+            </table>
+            <input type="submit" value="ok" onclick="add();">
+        </div>
+        <div id="wait"><img src="@{'/public/img/bar.gif'}"/></div>
+        <br/>
+        <a href="@{'/app/application/all'}">all persons</a> - <a href="#" onclick="show();">add</a><br/>
+        <br/>
+        <script type="text/javascript">
+           show();
+           function add() {
+               $('#form').hide();
+               $('#wait').show();
+               $('#results').hide();
+               $('#fail').hide();
+               var xmlDocument = "<person><address>" + $('#address').val() + "</address><name>" + $('#name').val() + "</name><surname>"+ $('#surname').val() +"</surname></person>";
+               $.ajax({
+                   url: "@{'/app/application/put'}",
+                   type: "PUT",
+                   contentType: "application/xml",
+                   data: xmlDocument,
+                   success: function(html){
+                       $('#wait').hide();
+                       if (html.match("ok")) {
+                           $('#results').show();
+                           $('#form').show();
+                       } else {
+                            $('#fail').show();
+                            $('#form').show();
+                       }
+                       $('#address').val("");
+                       $('#name').val("");
+                       $('#surname').val("");
+                   }
+                });
+            }
+            function show() {
+                $('#address').val("");
+                $('#name').val("");
+                $('#surname').val("");
+                $('#form').show();
+                $('#wait').hide();
+                $('#results').hide();
+                $('#fail').hide();
+            }
+         </script>
+    </p>
 </div>
 <div class="byline" />

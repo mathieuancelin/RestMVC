@@ -1,13 +1,17 @@
 package app.controller;
 
+import app.model.Person;
 import app.services.HelloService;
 import cx.ath.mancel01.restmvc.view.Render;
 import cx.ath.mancel01.restmvc.view.View;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 @Stateless
@@ -17,8 +21,8 @@ public class Application {
     @EJB HelloService service;
 
     @GET
-    @Path("index/{name}")
-    public Response index(@PathParam("name") String name) {
+    @Path("hello/{name}")
+    public Response hello(@PathParam("name") String name) {
         return new View()
                 .param("name", service.hello(name))
                 .render();
@@ -33,8 +37,18 @@ public class Application {
     }
 
     @GET
-    @Path("test")
-    public Response test() {
-        return Render.text("Hello dude!");
+    @Path("all")
+    public Response all() {
+        return new View()
+                .param("persons", Person.jpa.all())
+                .render();
+    }
+
+    @Path("put")
+    @PUT
+    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public Response putValue(Person value) {
+        value.save();
+        return Render.text("ok");
     }
 }

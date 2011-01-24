@@ -1,0 +1,15 @@
+#{extends 'main.html' /}
+#{set title:'Find All' /}
+
+<h2 class="title"><a href="#">Persons</a></h2>
+<div class="entry">
+    <p>
+      #{list items:persons, as:'person'}
+          <div>${person}</div><br/>
+      #{/list}
+    </p>
+</div>
+<div class="byline">
+    <a href="@{'/app/application/index'}/">back</a>
+</div>
+                            
