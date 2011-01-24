@@ -1,7 +1,7 @@
 package cx.ath.mancel01.restmvc.view;
 
+import cx.ath.mancel01.restmvc.FrameworkFilter;
 import cx.ath.mancel01.restmvc.utils.FileUtils;
-import cx.ath.mancel01.restmvc.utils.UtilServlet;
 import groovy.text.SimpleTemplateEngine;
 import java.io.File;
 import java.io.StringWriter;
@@ -34,21 +34,21 @@ public class TemplateRenderer {
     private String renderWithGroovy(String fileName, Map<String, Object> context) throws Exception {
         // TODO : if file not exists, return 404
         StringWriter osw = new StringWriter();
-//        if (WebFramework.dev) {
-        File file = UtilServlet.getFile("views/" + fileName);
-        String code = FileUtils.readFileAsString(file);
-        return engine.createTemplate(enhanceCode(code)).make(context).writeTo(osw).toString();
+        File file = FrameworkFilter.getFile("views/" + fileName);
+        if (FrameworkFilter.dev) {
+            String code = FileUtils.readFileAsString(file);
+            return engine.createTemplate(enhanceCode(code)).make(context).writeTo(osw).toString();
             //return engine.createTemplate(file).make(context).writeTo(osw);
-//        } else {
-//            if (!templates.containsKey(file.getAbsolutePath())) {
-//                String code = FileUtils.readFileAsString(file);
+        } else {
+            if (!templates.containsKey(file.getAbsolutePath())) {
+                String code = FileUtils.readFileAsString(file);
+                templates.putIfAbsent(file.getAbsolutePath()
+                    , engine.createTemplate(enhanceCode(code)));
 //                templates.putIfAbsent(file.getAbsolutePath()
-//                    , engine.createTemplate(enhanceCode(code, grabber)));
-////                templates.putIfAbsent(file.getAbsolutePath()
-////                    , engine.createTemplate(file));
-//            }
-//            return templates.get(file.getAbsolutePath()).make(context).writeTo(osw);
-//        }
+//                    , engine.createTemplate(file));
+            }
+            return templates.get(file.getAbsolutePath()).make(context).writeTo(osw).toString();
+        }
     }
 
     public static String enhanceCode(String code) {
@@ -95,8 +95,8 @@ public class TemplateRenderer {
             String group = linkMatcher.group();
             String link = group;
             link = link.replace("@{'", "").replace("'}", "");
-            if (!"/".equals(UtilServlet.getContextRoot())) {
-                link = UtilServlet.getContextRoot() + link;
+            if (!"/".equals(FrameworkFilter.getContextRoot())) {
+                link = FrameworkFilter.getContextRoot() + link;
             }
             custom  = custom.replace(group, link);
         }
@@ -106,7 +106,7 @@ public class TemplateRenderer {
             String group = extendsMatcher.group();
             String fileName = group;
             fileName = fileName.replace("#{extends '", "").replace("' /}", "");
-            File file = UtilServlet.getFile("views/" + fileName);
+            File file = FrameworkFilter.getFile("views/" + fileName);
             String parentCode = FileUtils.readFileAsString(file);
             String parentCustomCode = enhanceCode(parentCode);
             String[] parts = parentCustomCode.split("\\#\\{doLayout /\\}");

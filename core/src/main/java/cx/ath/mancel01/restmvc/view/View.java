@@ -1,16 +1,15 @@
 package cx.ath.mancel01.restmvc.view;
 
+import cx.ath.mancel01.restmvc.FrameworkFilter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
 public class View extends Renderable {
 
-    private static final Logger logger = Logger.getLogger("View");
     private static final TemplateRenderer renderer = new TemplateRenderer();
     private static final String TYPE = MediaType.TEXT_HTML;
     private final String viewName;
@@ -54,7 +53,7 @@ public class View extends Renderable {
             name = className + "/" + name;
             String renderText = renderer.render(name, context);
             ResponseBuilder builder = Response.ok(renderText, TYPE);
-            logger.log(Level.INFO, "template view rendering : {0} ms.", System.currentTimeMillis() - start);
+            FrameworkFilter.logger.log(Level.INFO, "template view rendering : {0} ms.", System.currentTimeMillis() - start);
             return builder.build();
         } catch (Exception ex) {
             throw new RuntimeException(ex);

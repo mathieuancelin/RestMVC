@@ -1,7 +1,10 @@
 package cx.ath.mancel01.restmvc.data;
 
+import cx.ath.mancel01.restmvc.FrameworkFilter;
+import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
+import javax.persistence.criteria.CriteriaQuery;
 
 public class DataHelper<T> {
 
@@ -9,7 +12,7 @@ public class DataHelper<T> {
     private final String name;
 
     private EntityManager em() {
-        return null;
+        return FrameworkFilter.currentEm.get();
     }
 
     private DataHelper(Class<T> clazz) {
@@ -21,8 +24,11 @@ public class DataHelper<T> {
         return new DataHelper<T>(clazz);
     }
 
-    public Query all() {
-       return em().createQuery("select o from " + name + " o");
+    public List<T> all() {
+        CriteriaQuery<T> query = em().getCriteriaBuilder().createQuery(clazz);
+        query.from(clazz);
+        return em().createQuery(query).getResultList();
+        //return em().createQuery("select o from " + name + " o");
     }
 
     public long count() {
@@ -33,7 +39,7 @@ public class DataHelper<T> {
         return em().createQuery("delete from " + name).executeUpdate();
     }
 
-    public T delete(Object o) {
+    public T delete(T o) {
         em().remove(o);
         return (T) o;
     }
@@ -56,13 +62,47 @@ public class DataHelper<T> {
         return (T) o;
     }
 
-    public T save(Object o) {
+    public T save(T o) {
+        if (em().contains(o)) {
+            return em().merge(o);
+        }
         em().persist(o);
         return (T) o;
     }
 
-    public T merge(Object o) {
-        return (T) em().merge(o);
+    public T deleteById(final Long id) {
+        T object = findById(id);
+        delete(object);
+        return object;
     }
 
+    public <T> List<T> findByNamedQuery(final String namedQueryName) {
+        return em().createNamedQuery(namedQueryName).getResultList();
+    }
+
+    public <T> List<T> findByNamedQuery(final String namedQueryName, final Object... params) {
+        Query query = em().createNamedQuery(namedQueryName);
+        int i = 1;
+        for (Object p : params) {
+            query.setParameter(i++, p);
+        }
+        return query.getResultList();
+    }
+
+    public <T> T findUniqueByNamedQuery(final String namedQueryName)  {
+        return (T) em().createNamedQuery(namedQueryName).getSingleResult();
+    }
+
+    public <T> T findUniqueByNamedQuery(final String namedQueryName, final Object... params) {
+        Query query = em().createNamedQuery(namedQueryName);
+        int i = 1;
+        for (Object p : params) {
+            query.setParameter(i++, p);
+        }
+        return (T) query.getSingleResult();
+    }
+
+    public void rollback() {
+        em().getTransaction().rollback();
+    }
 }

@@ -30,8 +30,4 @@ public abstract class Model<T> {
     public T save() {
         return (T) helper.save(this);
     }
-
-    public T merge() {
-        return (T) helper.merge(this);
-    }
 }
