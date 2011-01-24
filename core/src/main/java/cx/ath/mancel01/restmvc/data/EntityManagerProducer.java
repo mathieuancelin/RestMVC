@@ -3,7 +3,6 @@ package cx.ath.mancel01.restmvc.data;
 import cx.ath.mancel01.restmvc.FrameworkFilter;
 import java.io.Serializable;
 import javax.enterprise.context.RequestScoped;
-import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Produces;
 import javax.persistence.EntityManager;
 
@@ -15,9 +14,5 @@ public class EntityManagerProducer implements Serializable {
     @Produces
     public EntityManager create() {
         return FrameworkFilter.currentEm.get();
-    }
-
-    public void close(@Disposes EntityManager em) {
-        em.close();
     }
 }

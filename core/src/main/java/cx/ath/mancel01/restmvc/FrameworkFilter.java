@@ -1,5 +1,6 @@
 package cx.ath.mancel01.restmvc;
 
+import cx.ath.mancel01.restmvc.http.Session;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -59,6 +60,7 @@ public class FrameworkFilter implements Filter {
         currentEm.set(em);
         currentRequest.set((HttpServletRequest) request);
         currentResponse.set((HttpServletResponse) response);
+        Session.current.set(Session.restore());
         doBeforeProcessing(request, response);
         Throwable problem = null;
         try {
@@ -66,6 +68,7 @@ public class FrameworkFilter implements Filter {
         } catch (Throwable t) {
             problem = t;
             t.printStackTrace();
+            Session.current.remove();
         }
         doAfterProcessing(request, response);
         if (problem != null) {
@@ -77,9 +80,14 @@ public class FrameworkFilter implements Filter {
             }
             sendProcessingError(problem, response);
         }
+        if (Session.current.get() != null) {
+            Session.current.get().save();
+            Session.current.remove();
+        }
         currentEm.remove();
         currentRequest.remove();
         currentResponse.remove();
+
     }
 
     public FilterConfig getFilterConfig() {
