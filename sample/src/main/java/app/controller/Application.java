@@ -2,15 +2,18 @@ package app.controller;
 
 import app.model.Person;
 import app.services.HelloService;
+import cx.ath.mancel01.restmvc.http.Session;
 import cx.ath.mancel01.restmvc.view.Render;
 import cx.ath.mancel01.restmvc.view.View;
+import java.io.File;
+import java.util.logging.Logger;
 import javax.ejb.Stateless;
-import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -18,15 +21,16 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 @Stateless
-@Path("application")
+@Path("/")
 public class Application {
 
     @Inject HelloService service;
     @Inject HttpServletRequest request;
     @Inject HttpServletResponse response;
+    @Inject Logger appLogger;
+    @Inject Session session;
 
-    @GET
-    @Path("hello/{name}")
+    @GET @Path("application/hello/{name}")
     public Response hello(@PathParam("name") String name) {
         return new View()
                 .param("name", service.hello(name))
@@ -34,26 +38,35 @@ public class Application {
     }
 
     @GET
-    @Path("index")
     public Response index() {
         return new View("index.html")
                 .param("name", service.hello("guest"))
                 .render();
     }
 
-    @GET
-    @Path("all")
+    @GET @Path("application/all")
     public Response all() {
         return new View()
                 .param("persons", Person.jpa.all())
                 .render();
     }
 
-    @Path("put")
-    @PUT
+    @PUT @Path("application/put")
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response putValue(Person value) {
-        value.save();
-        return Render.text("ok");
+        try {
+            Thread.sleep(2000);
+            value.save();
+            return Render.text("ok");
+        } catch (Exception e) {
+            return Render.text("ko");
+        }
+    }
+
+    @POST @Path("application/file")
+    public Response postFile(File file) {
+        System.out.println(file);
+        System.out.println(file.length());
+        return Render.redirect("#");
     }
 }

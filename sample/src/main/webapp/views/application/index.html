@@ -18,9 +18,14 @@
             </table>
             <input type="submit" value="ok" onclick="add();">
         </div>
+        <form  action="@{'/app/application/file'}" method="POST" enctype="multipart/form-data">
+            <input type="file" name="file1"/>
+            <br/>
+            <input type="submit" value="upload"/>
+        </form>
         <div id="wait"><img src="@{'/public/img/bar.gif'}"/></div>
         <br/>
-        <a href="@{'/app/application/all'}">all persons</a> - <a href="#" onclick="show();">add</a><br/>
+        <a href="@{'/app/application/all'}">all persons</a><br/>
         <br/>
         <script type="text/javascript">
            show();
