@@ -1,7 +1,6 @@
 package cx.ath.mancel01.restmvc.http;
 
 import cx.ath.mancel01.restmvc.FrameworkFilter;
-import cx.ath.mancel01.restmvc.FrameworkProducer.SessionId;
 import cx.ath.mancel01.restmvc.utils.SecurityUtils;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
@@ -10,11 +9,12 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.enterprise.context.RequestScoped;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@SessionId
+@RequestScoped
 public class Session {
 
     public static final String SESSION_ID = "webfwk-session-id";
