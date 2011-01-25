@@ -1,6 +1,7 @@
 package cx.ath.mancel01.restmvc.view;
 
 import cx.ath.mancel01.restmvc.FrameworkFilter;
+import cx.ath.mancel01.restmvc.http.Session;
 import cx.ath.mancel01.restmvc.utils.FileUtils;
 import groovy.text.SimpleTemplateEngine;
 import java.io.File;
@@ -28,12 +29,18 @@ public class TemplateRenderer {
     }
 
     public String render(String source, Map<String, Object> context) throws Exception {
+        context.put("session", Session.current.get());
+        context.put("request", FrameworkFilter.currentRequest.get());
+        context.put("logger", FrameworkFilter.logger);
+        context.put("dev", FrameworkFilter.dev);
+        context.put("root", FrameworkFilter.getContextRoot());
         return renderWithGroovy(source, context);
     }
 
     private String renderWithGroovy(String fileName, Map<String, Object> context) throws Exception {
         // TODO : if file not exists, return 404
         StringWriter osw = new StringWriter();
+        context.put("out", osw);
         File file = FrameworkFilter.getFile("views/" + fileName);
         if (FrameworkFilter.dev) {
             String code = FileUtils.readFileAsString(file);
@@ -44,8 +51,8 @@ public class TemplateRenderer {
                 String code = FileUtils.readFileAsString(file);
                 templates.putIfAbsent(file.getAbsolutePath()
                     , engine.createTemplate(enhanceCode(code)));
-//                templates.putIfAbsent(file.getAbsolutePath()
-//                    , engine.createTemplate(file));
+                //templates.putIfAbsent(file.getAbsolutePath()
+                //    , engine.createTemplate(file));
             }
             return templates.get(file.getAbsolutePath()).make(context).writeTo(osw).toString();
         }
