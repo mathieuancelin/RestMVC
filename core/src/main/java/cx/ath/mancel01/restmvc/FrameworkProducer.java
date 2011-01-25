@@ -34,7 +34,6 @@ public class FrameworkProducer {
 
     @Produces @RequestScoped
     public HttpServletRequest getRequest() {
-        System.out.println("get req");
         return FrameworkFilter.currentRequest.get();
     }
 
