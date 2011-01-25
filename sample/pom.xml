@@ -42,5 +42,8 @@
         </plugins>
         <finalName>sample</finalName>
     </build>
+    <properties>
+        <netbeans.hint.j2eeVersion>1.6</netbeans.hint.j2eeVersion>
+    </properties>
 </project>
 
