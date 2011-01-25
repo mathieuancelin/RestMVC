@@ -1,8 +1,8 @@
 package cx.ath.mancel01.restmvc.security;
 
+import cx.ath.mancel01.restmvc.utils.SecurityUtils;
 import cx.ath.mancel01.restmvc.FrameworkFilter;
 import cx.ath.mancel01.restmvc.http.Session;
-import cx.ath.mancel01.restmvc.utils.SecurityUtils;
 import cx.ath.mancel01.restmvc.view.Render;
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.InvocationContext;
