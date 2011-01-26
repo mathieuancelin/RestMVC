@@ -22,8 +22,7 @@ import java.io.NotSerializableException;
 import java.io.Serializable;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import javax.ejb.Singleton;
-import javax.ejb.Startup;
+import javax.inject.Singleton;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
@@ -35,7 +34,6 @@ import net.sf.ehcache.store.MemoryStoreEvictionPolicy;
  * @author Mathieu ANCELIN
  */
 @Singleton
-@Startup
 public class CacheService {
     
     private CacheManager cacheManager;

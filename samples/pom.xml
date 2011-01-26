@@ -3,14 +3,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>cx.ath.mancel01.restmvc</groupId>
-    <artifactId>restmvc</artifactId>
+    <artifactId>restmvc-samples</artifactId>
     <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
-    <name>RestMVC</name>
+    <name>RestMVC :: Samples</name>
     <modules>
-        <module>core</module>
-        <module>samples</module>
-        <module>modules</module>
+        <module>simple</module>
+        <module>todo</module>
     </modules>
 </project>
 

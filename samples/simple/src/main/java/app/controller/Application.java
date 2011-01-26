@@ -19,14 +19,12 @@ package app.controller;
 
 import app.model.Person;
 import app.services.HelloService;
-import cx.ath.mancel01.restmvc.cache.CacheService;
 import cx.ath.mancel01.restmvc.http.Session;
 import cx.ath.mancel01.restmvc.view.Render;
 import cx.ath.mancel01.restmvc.view.View;
 import java.io.File;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
-import javax.ejb.EJB;
 import javax.ejb.Schedule;
 import javax.ejb.Startup;
 import javax.ejb.Stateless;
@@ -51,7 +49,6 @@ import javax.ws.rs.core.Response;
 @Path("/")
 public class Application {
 
-    @EJB CacheService cache;
     @Inject HelloService service;
     @Inject HttpServletRequest request;
     @Inject HttpServletResponse response;
